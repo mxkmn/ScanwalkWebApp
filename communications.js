@@ -45,7 +45,7 @@ class Communications {
         this.p_postData(url, { id: Math.floor(Math.random()*5 + 100000) }) // (Math.random() * (999999 - 100000) + 100000)
             .then((data) => {
                 user.setData(data['token'], data['tgtoken']);
-                window.location.replace('index.html');
+                window.location.replace('');
             }
         );
     }
