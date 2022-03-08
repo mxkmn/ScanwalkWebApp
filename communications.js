@@ -1,4 +1,6 @@
 class Communications {
+    p_timeout = null;
+    p_baseUrl = 'https://scanwalk.ru/api/v1/';
     async p_postData(url = '', data = {}) {
         // Default options are marked with *
         const response = await fetch(url, {
@@ -12,40 +14,38 @@ class Communications {
           },
           redirect: 'follow', // manual, *follow, error
           referrerPolicy: 'no-referrer', // no-referrer, *client
-          body: JSON.stringify(data) // body data type must match "Content-Type" header
-        });
+          body: JSON.stringify(data) // body data type must match 'Content-Type' header
+        }).catch((error) => {
+            clearTimeout(this.p_timeout);
+            activate('connection_error');
+            this.p_timeout = setTimeout(update, 10*1000);
+        })
         return await response.json(); // parses JSON response into native JavaScript objects
     }
 	getQr() {
-        const url = "https://scanwalk.herokuapp.com/api/v1/qrecords/generate";
-        
-        const logging = false; // вывод скорости
+        const url = this.p_baseUrl + 'qrecords/generate';
 
         const successDiv = document.getElementById('success');
-        const sendDate = (new Date()).getTime();
-    
-        if (logging) {
-            successDiv.setAttribute("style", "display: none");
-        }
-    
+
         this.p_postData(url, { token: user.getToken() })
             .then((data) => {
-                document.getElementById('qr_image').setAttribute("src", "data:image/png;base64," + data["image"]);
-        
-                if (logging) {
-                    successDiv.textContent = 'QR-код успешно сгенерирован за ' + (receiveDate - sendDate) + ' миллисекунд!';
-                    successDiv.setAttribute("style", "display: block");
-                }
-            }
-        );
+                clearTimeout(this.p_timeout);
+                document.getElementById('qr_image').setAttribute('src', 'data:image/png;base64,' + data['image']);
+                activate('qr_image');
+                this.p_timeout = setTimeout(update, (data['time']-3)*1000);
+            }).catch((error) => {
+                clearTimeout(this.p_timeout);
+                activate('timeout');
+                this.p_timeout = setTimeout(update, 5*1000);
+            });
     }
     getTokens() {
-        const url = "https://scanwalk.herokuapp.com/api/v1/auth/token";
+        const url = this.p_baseUrl + 'auth/token';
 
         this.p_postData(url, { id: Math.floor(Math.random()*5 + 100000) }) // (Math.random() * (999999 - 100000) + 100000)
             .then((data) => {
-                user.setData(data["token"], data["tgtoken"]);
-                window.location.replace("generator.html");
+                user.setData(data['token'], data['tgtoken']);
+                window.location.replace('index.html');
             }
         );
     }

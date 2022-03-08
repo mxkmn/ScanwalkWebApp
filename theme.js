@@ -17,10 +17,10 @@ class Theme {
 	}
 	p_setTheme() {
         if (this.p_id == 0) {
-	        document.querySelector('.colorizable').classList.remove("black");
+	        document.querySelector('.colorizable').classList.remove('black');
         }
         else if (this.p_id == 1) {
-	        document.querySelector('.colorizable').classList.add("black");
+	        document.querySelector('.colorizable').classList.add('black');
         }
     }
 	changeTheme() {

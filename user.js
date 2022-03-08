@@ -1,6 +1,6 @@
 class User {
-	p_token = "";
-	p_tgKey = "";
+	p_token = '';
+	p_tgKey = '';
 	constructor() {
 		if (this.p_storageAvailable() && localStorage.getItem('token') && localStorage.getItem('tgKey')) {
 			this.p_token = localStorage.getItem('token');
@@ -17,7 +17,7 @@ class User {
 		catch (e) { return false; } // localStorage не работает в этом браузере
 	}
 	isAccessible() {
-		return ((this.p_token != "") && (this.p_tgKey != ""));
+		return ((this.p_token != '') && (this.p_tgKey != ''));
 	}
 	getToken() {
 		return this.p_token;
@@ -34,10 +34,13 @@ class User {
 			localStorage.setItem('tgKey', tg);
 		}
 	}
+	tgLogin() {
+		window.open('https://t.me/ScanWalkBot?start=' + this.p_tgKey);
+	}
 	deauth() {
-		this.setData("", "");
-		document.getElementById('user_container').classList.remove("active");
-		document.getElementById('login_container').classList.add("active");
+		this.setData('', '');
+		document.getElementById('user_container').classList.remove('active');
+		document.getElementById('login_container').classList.add('active');
 	}
 }
 

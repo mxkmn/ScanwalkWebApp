@@ -1,17 +1,22 @@
-// очистка кеша PWA
-self.addEventListener('activate', event => {
-    var cacheKeeplist = [cacheName];
-    event.waitUntil(
-        caches.keys().then( keyList => {
-            return Promise.all(keyList.map( key => {
-                if (cacheKeeplist.indexOf(key) === -1) {
-                    return caches.delete(key);
-                }
-            }));
-        })
-.then(self.clients.claim())); //this line is important in some contexts
-});
-// очистка данных сайта
-localStorage.clear();
-// получение токена
-communications.getTokens();
+if (!user.isAccessible()) {
+	alert('Необходимо войти ещё раз...');
+	window.location.replace('get_id.html');
+}
+else {
+	communications.getQr();
+}
+
+function update() {
+	communications.getQr();
+}
+function activate(el) {
+	['qr_image', 'waiting', 'timeout', 'connection_error'].forEach(element => {
+		document.getElementById(element).style.display = (el == element) ? 'block' : 'none';
+	});
+}
+
+if ('serviceWorker' in navigator) {
+	navigator.serviceWorker
+		.register('pwa_sw.js')
+		.then(() => { console.log('Сайт сохранён'); });
+}
